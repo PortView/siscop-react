@@ -2,11 +2,11 @@ import MenuPrincipal from './MenuPrincipal'
 import Cabecalho from './Cabecalho'
 import Conteudo from './Conteudo'
 import Flex from './Flex'
+import BarraTopo from './BarraTopo'
+
 
 
 interface PaginaProps {
-    titulo?: string
-    subtitulo?: string
     children?: any
 }
 
@@ -17,7 +17,9 @@ export default function PaginaSemMenu(props: PaginaProps) {
             bg-zinc-900 text-white
         `}>
             <Flex col className={`flex-1`}>
-                <Cabecalho titulo={props.titulo} subtitulo={props.subtitulo} />
+                {/* <Cabecalho titulo={props.titulo} subtitulo={props.subtitulo} /> */}
+                {/* Componente BarraTopo agora obtém os dados do usuário diretamente do localStorage */}
+                <BarraTopo />
                 <Conteudo>
                     {props.children}
                 </Conteudo>

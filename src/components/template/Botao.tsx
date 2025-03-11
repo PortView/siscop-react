@@ -7,6 +7,7 @@ export interface BotaoProps {
 	onClick?: (e: any) => void;
 	className?: string;
 	larguraFixa?: number;
+	tamanhoIcone?: number;
 }
 
 export default function Botao(props: BotaoProps) {
@@ -19,10 +20,20 @@ export default function Botao(props: BotaoProps) {
 		return 11;
 	}
 
+	function tamanhoIconePadrao() {
+		if (props.tamanho === "xs") return 16;
+		if (props.tamanho === "lg") return 20;
+		if (props.tamanho === "xl") return 24;
+		if (props.tamanho === "2xl") return 28;
+		if (props.tamanho === "3xl") return 32;
+		return 18; 
+	}
+
 	return (
 		<button
 			className={`
             flex items-center gap-2 px-5 h-${tamanho()}
+			justify-center
             hover:bg-opacity-80 select-none
             ${props.redondo ? "rounded-full" : "rounded-md"}
             ${props.redondo && `justify-center w-${tamanho()}`}
@@ -33,7 +44,16 @@ export default function Botao(props: BotaoProps) {
 			onClick={props.onClick}
 			style={props.larguraFixa ? { width: `${props.larguraFixa}px` } : {}}
 		>
-			{props.icone}
+			{props.icone && (
+				<div style={{ 
+					display: 'flex', 
+					alignItems: 'center', 
+					fontSize: props.tamanhoIcone || tamanhoIconePadrao(),
+					//transform: 'scale(1.2)' 
+				}}>
+					{props.icone}
+				</div>
+			)}
 			{props.texto}
 		</button>
 	);

@@ -8,6 +8,17 @@ interface LoginResponse {
   access_token: string
 }
 
+// Interface para os dados do usuário retornados pela API ME
+interface UserData {
+  id: number;
+  email: string;
+  name: string;
+  cod: number;
+  tipo: string;
+  mvvm: string;
+  codcargo: number;
+}
+
 export default function Login() {
   const [email, setEmail] = useState('redes01@ameni.com.br')
   const [password, setPassword] = useState('$Redes01')
@@ -55,6 +66,37 @@ export default function Login() {
         
         // Configura o token para requisições futuras
         axios.defaults.headers.common['Authorization'] = `Bearer ${response.data.access_token}`
+        
+        // Buscar informações do usuário logado
+        try {
+          const meApiUrl = process.env.NEXT_PUBLIC_API_ME_URL
+          if (!meApiUrl) {
+            throw new Error('URL da API ME não configurada')
+          }
+
+          // Chamada à API ME para obter os dados do usuário
+          const userResponse = await axios.get<UserData>(meApiUrl, {
+            headers: {
+              'Authorization': `Bearer ${response.data.access_token}`
+            }
+          })
+
+          // Armazena os dados do usuário no localStorage
+          if (userResponse.data) {
+            localStorage.setItem('usuario_nome', userResponse.data.name)
+            localStorage.setItem('usuario_cargo', userResponse.data.tipo)
+            localStorage.setItem('usuario_cod', userResponse.data.cod.toString())
+            localStorage.setItem('usuario_email', userResponse.data.email)
+            localStorage.setItem('usuario_id', userResponse.data.id.toString())
+            localStorage.setItem('usuario_codcargo', userResponse.data.codcargo.toString())
+            
+            // Armazena o objeto completo para uso futuro, se necessário
+            localStorage.setItem('usuario_dados', JSON.stringify(userResponse.data))
+          }
+        } catch (userErr) {
+          console.error('Erro ao buscar dados do usuário:', userErr)
+          // Não impede o login se falhar ao buscar dados do usuário
+        }
         
         // Força o redirecionamento para a página do gerente
         window.location.href = '/gerencia/pagGerente'

@@ -50,9 +50,19 @@ d - CheckBox "Todas Ufs":
   2 - Funcionalidade deste checkbox quando checado "TRUE" é determinar se todas as unidades estarão disponiveis no dropdown "Unidades" passando o parametro "uf=ZZ" para a API.
   3 - Quando desabilitado não checado "FALSE", habilita o dropdown "UFs", apresentando as ufs disponiveis para o cliente selecionado, passando o parametro "uf" a uf selecionada.
   4 - Em todas as ações neste checkbox, o dropdown "Unidades" será re-carregado, com a uf selecionada no "UFs" ou "ZZ".
-  
+
 e - Botão "Contrato" que no seu label é apresentado "Contr: " concatenado com o numero do contrato da unidade selecionada, resultado do json que popula o dropdown "Unidades", folowups.contrato.
 
 3 - Analizando melhor vejo que para obter um resultado menos complicado e mais obvio, mudaremos como está sendo concatenado os resultados do conteudo do dropdown "Unidades".
-a - Eliminar o modo como está sendo concatenada a uf com a unidade quando o checkbox "Todas Ufs" está checado ou não.
-b - Adotamos o seguinte método: Popularemos sempre o conteudo de "Unidades" com o resultado da api concatenando folowups.contrato + " " + folowups.cadimov.uf + " " + folowups.cadimov.tipo. Não importando se o checkbox "Todas Ufs", somente filtrando se são todas Ufs ou somente a que está selecionada no "UFs.
+  a - Eliminar o modo como está sendo concatenada a uf com a unidade quando o checkbox "Todas Ufs" está checado ou não.
+  b - Adotamos o seguinte método: Popularemos sempre o conteudo de "Unidades" com o resultado da api concatenando folowups.contrato + " " + folowups.cadimov.uf + " " + folowups.cadimov.tipo. Não importando se o checkbox "Todas Ufs", somente filtrando se são todas Ufs ou somente a que está selecionada no "UFs.
+
+4 - (Régua de paginação) Para obter um melhor desempenho, montaremos uma regua de paginação que servirá para o dropdown "Unidades", quando a api de unidades retornar 
+no arquivo json "pagination.totalItems" for maior que 100, o dropdown "Unidades" será carregado com 100 itens por pagina, e o usuario poderá navegar entre as paginas, nesta regua teremos 5 objetos da esquerda para a direita:
+ a - botao de paginação para o primeira pagina. 
+ b - botao de paginação para o pagina anterior.
+ c - Um input de texto que permita o usuario digitar o numero da pagina que deseja ir, e quando navegar mostra a o numero da pagina atual.
+ d - botao de paginação para o pagina seguinte.
+ e - botao de paginação para o ultima pagina.
+ Lembrando que o botão de primeira pagina e o botão de ultima pagina estarão desabilitados quando o numero da pagina atual for 1 ou o numero da pagina atual for o ultimo numero da pagina.
+ Esta regua somente estará visivel quando o numero de itens no dropdown "Unidades" for maior que 100.
