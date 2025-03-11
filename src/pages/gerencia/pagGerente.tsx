@@ -8,6 +8,7 @@ import RequireAuth from "../../components/auth/RequireAuth"
 import PaginaSemMenu from '@/components/template/PaginaSemMenu'
 import DropDown from '@/components/template/DropDown'
 import Botao from '@/components/template/Botao'
+import CheckBox from '@/components/template/CheckBox'
 
 interface Cliente {
   codcli: number;
@@ -307,7 +308,8 @@ export default function PagGerente() {
           </div>
 
           <div className="w-[calc(100vw-40px)] mx-auto">
-            <div className="flex flex-center flex-row bg-slate-400 shadow-md rounded-md p-4 h-100 mb-2">
+            <div className="flex flex-col">
+            <div className="flex flex-center flex-row items-center ">
               <DropDown 
                 largura='300px'
                 placeholder="Clientes"
@@ -315,20 +317,38 @@ export default function PagGerente() {
                 options={clientesOptions}
                 onChange={handleClienteChange}
               />
+              <div className="ml-2">
               <DropDown
                 largura='140px'
                 placeholder="UF"
                 label=""
-                containerClassName="flex flex-row items-center bg-zinc-600 p-5 mb-1 border border-solid border-red-600 rounded-md w-full ml-2"
+                // containerClassName="flex flex-row items-center bg-zinc-600 p-5 mb-1 border border-solid border-red-600 rounded-md w-full ml-2"
                 options={ufsOptions}
                 onChange={handleUfChange}
                 value={selectedUf}
               />
+      </div>
+      <CheckBox className="flex ml-2"
+      label="Todas Ufs"
+      labelPosition="left"
+      checked={false}
+      onChange={(checked) => console.log(checked)}
+      />
+                <Botao
+                  texto={`Contr: ${selectedContrato ? selectedContrato.toString().padStart(5, '0') : ''}`}
+                  className="ml-2"
+                  cor="bg-blue-500"
+                  redondo={false}
+                  tamanho="xl"
+                  larguraFixa={200}
+                />
+              </div>
+              <div className="flex flex-center flex-row ">
               <DropDown
-                largura='500px'
+                largura='450px'
                 placeholder="Unidades"
                 label={selectedUf ? `Unidades - ${selectedUf}` : "Unidades"}
-                containerClassName="flex flex-row items-center bg-zinc-600 p-5 mb-1 border border-solid border-red-600 rounded-md w-full ml-2"
+                containerClassName="flex mt-2 mb-2"
                 options={unidadesOptions.map(option => ({
                   id: option.id,
                   label: option.label
@@ -336,14 +356,7 @@ export default function PagGerente() {
                 onChange={handleUnidadeChange}
                 value={selectedUnidade ? unidadesOptions.find(opt => opt.id.toString() === selectedUnidade)?.label || null : null}
               />
-              <Botao
-                texto={`Contr: ${selectedContrato ? selectedContrato.toString().padStart(5, '0') : ''}`}
-                className="ml-2"
-                cor="bg-blue-500"
-                redondo={false}
-                tamanho="xl"
-                larguraFixa={200}
-              />
+              </div>
                         
                         </div>
             

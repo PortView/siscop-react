@@ -16,7 +16,8 @@ export default function DropDown({
     placeholder = "Selecione uma opção",
     onChange,
     largura = "",
-    containerClassName = "flex flex-row items-center bg-zinc-600 p-5 mb-1 border border-solid border-red-600 rounded-md w-full",
+    // containerClassName = "flex flex-row items-center bg-zinc-600 p-5 mb-1 border border-solid border-red-600 rounded-md w-full",
+    containerClassName = "",
     value
 }: DropDownProps) {
     const [isDropdownOpen, setIsDropdownOpen] = useState(false)
@@ -138,7 +139,7 @@ export default function DropDown({
 
     return (
         <div>
-            <div className={containerClassName}>
+            <div className={`${containerClassName} flex flex-row items-center`}>
                 {label && <span className="text-white mr-4 whitespace-nowrap">{label}</span>}
 
                 <div className="relative w-full" ref={dropdownRef}>
