@@ -8,6 +8,7 @@ interface DropDownProps {
     largura?: string;
     containerClassName?: string;
     value?: string | null;
+    disabled?: boolean; // Propriedade para desabilitar o dropdown
 }
 
 export default function DropDown({
@@ -18,7 +19,8 @@ export default function DropDown({
     largura = "",
     // containerClassName = "flex flex-row items-center bg-zinc-600 p-5 mb-1 border border-solid border-red-600 rounded-md w-full",
     containerClassName = "",
-    value
+    value,
+    disabled = false
 }: DropDownProps) {
     const [isDropdownOpen, setIsDropdownOpen] = useState(false)
     const [selectedOption, setSelectedOption] = useState<string | null>(value || null)
@@ -76,6 +78,7 @@ export default function DropDown({
     }, [value])
 
     const toggleDropdown = (e: React.MouseEvent) => {
+        if (disabled) return;
         e.stopPropagation()
         setIsDropdownOpen(!isDropdownOpen)
         if (!isDropdownOpen) {
@@ -96,6 +99,7 @@ export default function DropDown({
     }
 
     const handleClearSelection = (e: React.MouseEvent) => {
+        if (disabled) return;
         e.stopPropagation()
         setSelectedOption(null)
         setSearchTerm("")
@@ -108,6 +112,7 @@ export default function DropDown({
     }
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (disabled) return;
         const value = e.target.value
         setSearchTerm(value)
         if (!isDropdownOpen) {
@@ -116,6 +121,7 @@ export default function DropDown({
     }
 
     const handleInputClick = (e: React.MouseEvent) => {
+        if (disabled) return;
         e.stopPropagation()
         if (!isDropdownOpen) {
             setIsDropdownOpen(true)
@@ -150,18 +156,20 @@ export default function DropDown({
                         <input
                             ref={inputRef}
                             type="text"
-                            className="w-full px-3 py-2 text-gray-700 focus:outline-none rounded-md"
+                            className={`w-full px-3 py-2 text-gray-700 focus:outline-none rounded-md ${disabled ? 'bg-gray-200 cursor-not-allowed' : ''}`}
                             placeholder={selectedOption ? "" : placeholder}
                             value={selectedOption || searchTerm}
                             onChange={handleInputChange}
                             onClick={handleInputClick}
                             readOnly={!!selectedOption}
+                            disabled={disabled}
                         />
                         {selectedOption && (
                             <button
                                 type="button"
                                 className="px-2 text-gray-400 hover:text-gray-600"
                                 onClick={handleClearSelection}
+                                disabled={disabled}
                             >
                                 <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -172,6 +180,7 @@ export default function DropDown({
                             type="button"
                             className="px-2 text-gray-400"
                             onClick={toggleDropdown}
+                            disabled={disabled}
                         >
                             <svg className="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
                                 <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />

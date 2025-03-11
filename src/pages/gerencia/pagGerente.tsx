@@ -54,6 +54,9 @@ export default function PagGerente() {
       uf: string;
     }
   }>>([])
+  // Estado para controlar o checkbox "Todas Ufs"
+  // Inicializado como false para garantir que esteja desmarcado no carregamento da página
+  const [todasUfs, setTodasUfs] = useState(false)
 
   useEffect(() => {
     // Verifica se o usuário está autenticado
@@ -127,6 +130,9 @@ export default function PagGerente() {
         return
       }
 
+      // Log para depuração - usar o parâmetro uf diretamente
+      console.log("Parâmetro UF recebido na função:", uf)
+      
       const response = await axios.get(`${apiUrl}?codcoor=110&codcli=${codcli}&uf=${uf}&page=1`, {
         headers: {
           Authorization: `Bearer ${token}`
@@ -140,10 +146,11 @@ export default function PagGerente() {
         setUnidadesData(data.folowups)
         
         // Transformar os dados da API no formato esperado pelo DropDown
-        // Usando cadimov.tipo como texto de exibição e codend como valor interno
+        // Usando o formato contrato + UF + tipo como texto de exibição e codend como valor interno
         const options = data.folowups.map((unidade) => ({
           id: unidade.codend.toString(),
-          label: unidade.cadimov.tipo
+          // Novo formato padronizado: contrato + UF + tipo, independente do estado do checkbox "Todas Ufs"
+          label: `${unidade.contrato} ${unidade.cadimov.uf} ${unidade.cadimov.tipo}`
         }))
         
         setUnidadesOptions(options)
@@ -189,6 +196,13 @@ export default function PagGerente() {
     setSelectedContrato(null)
     setUnidadesOptions([])
     
+    // Se nenhum cliente estiver selecionado, reiniciar o estado do checkbox "Todas Ufs"
+    if (!value) {
+      console.log("Cliente desmarcado, reiniciando estado do checkbox Todas Ufs")
+      setTodasUfs(false)
+      return
+    }
+    
     // Se um cliente foi selecionado, buscar as UFs disponíveis
     if (value) {
       const codcli = parseInt(value)
@@ -203,16 +217,24 @@ export default function PagGerente() {
         
         setUfsOptions(ufsOptions)
         
-        // Selecionar automaticamente a primeira UF disponível
-        if (ufsOptions.length > 0) {
-          const primeiraUf = ufsOptions[0].id.toString()
-          // Atualizar o estado e chamar a função de mudança para garantir que todas as ações associadas sejam executadas
-          setSelectedUf(primeiraUf)
-          
-          // Buscar unidades para o cliente e UF selecionados
-          fetchUnidades(codcli, primeiraUf)
-          
-          console.log("Primeira UF selecionada automaticamente:", primeiraUf)
+        // Se o checkbox "Todas Ufs" estiver marcado, buscar unidades com "ZZ"
+        if (todasUfs) {
+          // Log para depuração
+          console.log("Cliente selecionado com Todas Ufs marcado, enviando ZZ para API")
+          fetchUnidades(codcli, "ZZ")
+        } else {
+          // Selecionar automaticamente a primeira UF disponível
+          if (ufsOptions.length > 0) {
+            const primeiraUf = ufsOptions[0].id.toString()
+            // Atualizar o estado e chamar a função de mudança para garantir que todas as ações associadas sejam executadas
+            setSelectedUf(primeiraUf)
+            
+            // Buscar unidades para o cliente e UF selecionados
+            console.log("Cliente selecionado com Todas Ufs desmarcado, enviando", primeiraUf, "para API")
+            fetchUnidades(codcli, primeiraUf)
+            
+            console.log("Primeira UF selecionada automaticamente:", primeiraUf)
+          }
         }
       } else {
         setUfsOptions([])
@@ -236,6 +258,7 @@ export default function PagGerente() {
     // Se um cliente e uma UF estiverem selecionados, buscar as unidades
     if (selectedOption && value) {
       const codcli = parseInt(selectedOption)
+      console.log("UF alterada, enviando", value, "para API")
       fetchUnidades(codcli, value)
     }
   }
@@ -266,6 +289,46 @@ export default function PagGerente() {
   // Função genérica para outros dropdowns
   const handleDropdownChange = (value: string | null) => {
     console.log("Opção selecionada:", value)
+  }
+
+  // Função para lidar com a mudança no checkbox "Todas Ufs"
+  const handleTodasUfsChange = (checked: boolean) => {
+    console.log("Checkbox Todas Ufs alterado para:", checked)
+    
+    // Atualizar o estado do checkbox
+    setTodasUfs(checked)
+    
+    // Se um cliente estiver selecionado
+    if (selectedOption) {
+      const codcli = parseInt(selectedOption)
+      
+      // Se o checkbox for marcado (TRUE), buscar todas as unidades com UF="ZZ"
+      if (checked) {
+        // Limpar a UF selecionada e desabilitar o dropdown "UFs"
+        setSelectedUf(null)
+        
+        // Buscar todas as unidades com UF="ZZ"
+        console.log("Estado do checkbox Todas Ufs:", checked)
+        console.log("Parâmetro UF enviado para API:", "ZZ")
+        fetchUnidades(codcli, "ZZ")
+      } 
+      // Se o checkbox for desmarcado (FALSE), buscar unidades com a UF selecionada
+      else {
+        const clienteSelecionado = clientesData.find(cliente => cliente.codcli === codcli)
+        
+        // Habilitar o dropdown "UFs" e selecionar automaticamente a primeira UF disponível
+        if (clienteSelecionado && clienteSelecionado.lc_ufs && clienteSelecionado.lc_ufs.length > 0) {
+          const primeiraUf = clienteSelecionado.lc_ufs[0].uf
+          setSelectedUf(primeiraUf)
+          
+          // Buscar unidades para o cliente e UF selecionados
+          console.log("Estado do checkbox Todas Ufs:", checked)
+          console.log("Parâmetro UF enviado para API:", primeiraUf)
+          fetchUnidades(codcli, primeiraUf)
+        }
+      }
+    }
+    // Se nenhum cliente estiver selecionado, o checkbox já estará desabilitado pela propriedade disabled no componente
   }
 
   const handleLogout = () => {
@@ -322,17 +385,18 @@ export default function PagGerente() {
                 largura='140px'
                 placeholder="UF"
                 label=""
-                // containerClassName="flex flex-row items-center bg-zinc-600 p-5 mb-1 border border-solid border-red-600 rounded-md w-full ml-2"
                 options={ufsOptions}
                 onChange={handleUfChange}
                 value={selectedUf}
+                disabled={todasUfs} // Desabilitar o dropdown quando o checkbox estiver marcado
               />
       </div>
       <CheckBox className="flex ml-2"
       label="Todas Ufs"
       labelPosition="left"
-      checked={false}
-      onChange={(checked) => console.log(checked)}
+      checked={todasUfs}
+      onChange={(checked) => handleTodasUfsChange(checked)}
+      disabled={!selectedOption} // Desabilitar o checkbox quando nenhum cliente estiver selecionado
       />
                 <Botao
                   texto={`Contr: ${selectedContrato ? selectedContrato.toString().padStart(5, '0') : ''}`}
@@ -345,9 +409,9 @@ export default function PagGerente() {
               </div>
               <div className="flex flex-center flex-row ">
               <DropDown
-                largura='450px'
+                largura='550px'
                 placeholder="Unidades"
-                label={selectedUf ? `Unidades - ${selectedUf}` : "Unidades"}
+                label="Unidades"
                 containerClassName="flex mt-2 mb-2"
                 options={unidadesOptions.map(option => ({
                   id: option.id,
