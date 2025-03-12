@@ -3,7 +3,8 @@ interface InputFormatadoProps {
     tipo: string;
     valor: string | number;
     onInput?: (e: any) => any;
-    className?: string
+    className?: string;
+    tamanho?: number;
 }
 
 export default function InputFormatado(props: InputFormatadoProps) {
@@ -16,7 +17,7 @@ export default function InputFormatado(props: InputFormatadoProps) {
                 onInput={props.onInput}
                 className={`
                     text-gray-600 px-2 
-                    w-40 h-11 rounded-md
+                    w-${props.tamanho} h-11 rounded-md
                     ${props.className ?? ''}
                 `}
             />

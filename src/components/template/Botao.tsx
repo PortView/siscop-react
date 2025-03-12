@@ -32,7 +32,7 @@ export default function Botao(props: BotaoProps) {
 	return (
 		<button
 			className={`
-            flex items-center gap-2 px-5 h-${tamanho()}
+            flex items-center h-${tamanho()}
 			justify-center
             hover:bg-opacity-80 select-none
             ${props.redondo ? "rounded-full" : "rounded-md"}
