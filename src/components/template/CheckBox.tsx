@@ -42,7 +42,7 @@ export default function CheckBox({
         <div className={`inline-flex items-center ${className}`}>
             {labelPosition === 'left' && label && (
                 <span 
-                    className={`mr-2 select-none ${disabled ? 'text-gray-400' : 'text-white'}`}
+                    className={`mr-2 select-none whitespace-nowrap ${disabled ? 'text-gray-400' : 'text-white'}`}
                     onClick={!disabled ? handleChange : undefined}
                 >
                     {label}
@@ -79,7 +79,7 @@ export default function CheckBox({
             
             {labelPosition === 'right' && label && (
                 <span 
-                    className={`ml-2 select-none ${disabled ? 'text-gray-400' : 'text-white'}`}
+                className={`ml-2 select-none whitespace-nowrap ${disabled ? 'text-gray-400' : 'text-white'}`}
                     onClick={!disabled ? handleChange : undefined}
                 >
                     {label}

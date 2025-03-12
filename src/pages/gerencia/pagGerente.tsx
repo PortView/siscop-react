@@ -375,7 +375,7 @@ export default function PagGerente() {
 
           <div className="w-[calc(100vw-40px)] ">
             <div className="flex flex-row items-center">
-              <div className="flex flex-col">
+              <div className="flex flex-col mb-2">
                 {/* Primeira linha de componentes - Clientes, Uf, Todas Ufs, Bt-Planilhas, Bt-Contrato */}
                 <div className="flex flex-center flex-row items-center ">
                   <DropDown
@@ -528,7 +528,7 @@ export default function PagGerente() {
                 </div>
               </div>
               {/* Segunda coluna do painel superior */}
-              <div className="flex flex-col bg-zinc-600 shadow-md rounded-md p-4 h-400 ml-10 mb-5">
+              <div className="flex flex-col bg-zinc-600 shadow-md rounded-md p-4 h-400 ml-10 mb-2">
                 {/* Primeira linha da segunda coluna de componentes - Checkboxs */}
                 <div className="flex flex-row items-center">
                   <CheckBox className="flex ml-2"
@@ -560,6 +560,7 @@ export default function PagGerente() {
                     checked={true}
                     onChange={(checked) => handleTodasUfsChange(checked)}
                     disabled={false} // Desabilitar o checkbox quando nenhum cliente estiver selecionado
+
                   />
                   <CheckBox className="flex ml-10"
                     label="Novos"
