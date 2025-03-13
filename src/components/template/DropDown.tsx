@@ -8,6 +8,7 @@ interface DropDownProps {
     largura?: string;
     containerClassName?: string;
     value?: string | null;
+    tamanhoFonte?: string; //| "md" | "lg" | "xl" | "2xl" | "3xl";
     disabled?: boolean; // Propriedade para desabilitar o dropdown
 }
 
@@ -20,6 +21,7 @@ export default function DropDown({
     // containerClassName = "flex flex-row items-center bg-zinc-600 p-5 mb-1 border border-solid border-red-600 rounded-md w-full",
     containerClassName = "",
     value,
+    tamanhoFonte = "md",
     disabled = false
 }: DropDownProps) {
     const [isDropdownOpen, setIsDropdownOpen] = useState(false)
@@ -143,6 +145,15 @@ export default function DropDown({
         return { width }
     }
 
+    function tamanho() {
+		if (tamanhoFonte === "xs") return 9;
+		if (tamanhoFonte === "lg") return 14;
+		if (tamanhoFonte === "xl") return 16;
+		if (tamanhoFonte === "2xl") return 20;
+		if (tamanhoFonte === "3xl") return 24;
+		return 11;
+	}
+
     return (
         <div>
             <div className={`${containerClassName} flex flex-row items-center`}>
@@ -156,18 +167,19 @@ export default function DropDown({
                         <input
                             ref={inputRef}
                             type="text"
-                            className={`w-full px-3 py-2 text-gray-700 focus:outline-none rounded-md ${disabled ? 'bg-gray-200 cursor-not-allowed' : ''}`}
+                            className={`w-full px-2 py-2 text-black focus:outline-none rounded-md ${disabled ? 'bg-blue-500 cursor-not-allowed' : ''}`}
                             placeholder={selectedOption ? "" : placeholder}
                             value={selectedOption || searchTerm}
                             onChange={handleInputChange}
                             onClick={handleInputClick}
                             readOnly={!!selectedOption}
                             disabled={disabled}
+                            style={{ fontSize: `${tamanho()}px` }} // Aplicando o tamanho da fonte conforme definido na função tamanho()
                         />
                         {selectedOption && (
                             <button
                                 type="button"
-                                className="px-2 text-gray-400 hover:text-gray-600"
+                                className="px-1 text-black hover:text-blue-500"
                                 onClick={handleClearSelection}
                                 disabled={disabled}
                             >
@@ -178,11 +190,11 @@ export default function DropDown({
                         )}
                         <button
                             type="button"
-                            className="px-2 text-gray-400"
+                            className="px-1 text-black bg-zinc-200 border rounded-md ml-1"
                             onClick={toggleDropdown}
                             disabled={disabled}
                         >
-                            <svg className="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                            <svg className="h-8 w-3" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
                                 <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
                             </svg>
                         </button>
@@ -199,13 +211,13 @@ export default function DropDown({
                                         <div
                                             key={option.id}
                                             onClick={() => handleOptionSelect(option)}
-                                            className={`px-4 py-2 text-sm text-gray-700 hover:bg-blue-100 cursor-pointer ${selectedOption === option.label ? 'bg-blue-500 text-white' : ''} ${index === 0 ? 'rounded-t-md' : ''} ${index === filteredOptions.length - 1 ? 'rounded-b-md' : ''}`}
+                                            className={`px-4 py-2 text-sm text-black hover:bg-blue-100 cursor-pointer ${selectedOption === option.label ? 'bg-blue-500 text-white' : ''} ${index === 0 ? 'rounded-t-md' : ''} ${index === filteredOptions.length - 1 ? 'rounded-b-md' : ''}`}
                                         >
                                             {option.label}
                                         </div>
                                     ))
                                 ) : (
-                                    <div className="px-4 py-2 text-sm text-gray-500">Nenhum resultado encontrado</div>
+                                    <div className="px-4 py-2 text-sm text-black">Nenhum resultado encontrado</div>
                                 )}
                             </div>
                         </div>

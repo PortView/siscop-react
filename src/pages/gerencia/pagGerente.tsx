@@ -372,163 +372,170 @@ export default function PagGerente() {
             {loading && <div className="text-blue-600 bg-transparent px-4 py-2 rounded">Carregando clientes...</div>}
             {loadingUnidades && <div className="text-blue-600 bg-transparent px-4 py-2 rounded">Carregando unidades...</div>}
           </div>
+          <div className="w-[calc(100vw-40px)] flex flex-col">
+            {/* Painel superior com responsividade para telas menores que 1600px */}
+            <div className="flex flex-col 2xl:flex-row items-start 2xl:items-start">
 
-          <div className="w-[calc(100vw-40px)] ">
-            <div className="flex flex-row items-center">
-              <div className="flex flex-col mb-2">
-                {/* Primeira linha de componentes - Clientes, Uf, Todas Ufs, Bt-Planilhas, Bt-Contrato */}
-                <div className="flex flex-center flex-row items-center ">
-                  <DropDown
-                    largura='380px'
-                    placeholder="Clientes"
-                    label=""
-                    options={clientesOptions}
-                    onChange={handleClienteChange}
-                  />
-                  <div className="ml-2">
+              {/* Primeira coluna do painel superior */}
+              <div className="flex flex-col mb-2 w-full 2xl:w-auto">
+                <div className="flex flex-col mb-2">
+                  {/* Primeira linha de componentes - Clientes, Uf, Todas Ufs, Bt-Planilhas, Bt-Contrato */}
+                  <div className="flex flex-center flex-row items-center ">
                     <DropDown
-                      largura='140px'
-                      placeholder="UF"
+                      largura='280px'
+                      placeholder="Clientes"
                       label=""
-                      options={ufsOptions}
-                      onChange={handleUfChange}
-                      value={selectedUf}
-                      disabled={todasUfs} // Desabilitar o dropdown quando o checkbox estiver marcado
+                      options={clientesOptions}
+                      onChange={handleClienteChange}
+                      tamanhoFonte= "xs" //| "md" | "lg" | "xl" | "2xl" | "3xl";
+                    />
+                    <div className="ml-2">
+                      <DropDown
+                        largura='120px'
+                        placeholder="UF"
+                        label=""
+                        options={ufsOptions}
+                        onChange={handleUfChange}
+                        value={selectedUf}
+                        disabled={todasUfs} // Desabilitar o dropdown quando o checkbox estiver marcado
+                        tamanhoFonte="xs"
+                      />
+                    </div>
+                    <CheckBox className="flex ml-2 mr-2"
+                      label="Todas Ufs"
+                      labelPosition="left"
+                      checked={todasUfs}
+                      onChange={(checked) => handleTodasUfsChange(checked)}
+                      disabled={!selectedOption} // Desabilitar o checkbox quando nenhum cliente estiver selecionado
+                    />
+
+                    <Botao
+                      texto="Planilhas"
+                      className="ml-2"
+                      cor="bg-blue-500"
+                      redondo={false}
+                      tamanho="xs"
+                      larguraFixa={110}
+                      icone={<IconFileText />}
+                      tamanhoIcone={28} // Definindo um tamanho maior para o ícone
+                    />
+                    <Botao
+                      texto={`Contr: ${selectedContrato ? selectedContrato.toString().padStart(5, '0') : ''}`}
+                      className="ml-2"
+                      cor="bg-blue-500"
+                      redondo={false}
+                      tamanho="xs"
+                      larguraFixa={120}
                     />
                   </div>
-                  <CheckBox className="flex ml-2 mr-8"
-                    label="Todas Ufs"
-                    labelPosition="left"
-                    checked={todasUfs}
-                    onChange={(checked) => handleTodasUfsChange(checked)}
-                    disabled={!selectedOption} // Desabilitar o checkbox quando nenhum cliente estiver selecionado
-                  />
-
-                  <Botao
-                    texto="Planilhas"
-                    className="ml-2"
-                    cor="bg-blue-500"
-                    redondo={false}
-                    tamanho="lg"
-                    larguraFixa={150}
-                    icone={<IconFileText />}
-                    tamanhoIcone={28} // Definindo um tamanho maior para o ícone
-                  />
-                  <Botao
-                    texto={`Contr: ${selectedContrato ? selectedContrato.toString().padStart(5, '0') : ''}`}
-                    className="ml-2"
-                    cor="bg-blue-500"
-                    redondo={false}
-                    tamanho="lg"
-                    larguraFixa={200}
-                  />
-                </div>
-                {/* Segunda linha de componentes - Unidades, Regua de Paginação */}
-                <div className="flex flex-center flex-row items-center">
-                  <DropDown
-                    largura='550px'
-                    placeholder="Unidades"
-                    label="Unidades"
-                    containerClassName="flex mt-2 mb-2"
-                    options={unidadesOptions.map(option => ({
-                      id: option.id,
-                      label: option.label
-                    }))}
-                    onChange={handleUnidadeChange}
-                    value={selectedUnidade ? unidadesOptions.find(opt => opt.id.toString() === selectedUnidade)?.label || null : null}
-                  />
-                  <div className="flex ml-2"></div>
-                  <ReguaDePag
-                    paginaAtual={paginaAtual}
-                    totalPaginas={totalPaginas}
-                    totalItems={totalItems}
-                    mostrarRegua={totalItems > 100}
-                    onChange={(pagina) => {
-                      setPaginaAtual(pagina);
-                      // Verificar se há um cliente selecionado
-                      if (selectedOption) {
-                        const codcli = parseInt(selectedOption);
-                        // Se o checkbox "Todas Ufs" estiver marcado, usar "ZZ" como UF
-                        if (todasUfs) {
-                          fetchUnidades(codcli, "ZZ", pagina);
+                  {/* Segunda linha de componentes - Unidades, Regua de Paginação */}
+                  <div className="flex flex-center flex-row items-center">
+                    <DropDown
+                      largura='450px'
+                      placeholder="Unidades"
+                      label="Unidades"
+                      containerClassName="flex mt-2 mb-2"
+                      options={unidadesOptions.map(option => ({
+                        id: option.id,
+                        label: option.label,
+                        tamanhoFonte: "xs"
+                      }))}
+                      onChange={handleUnidadeChange}
+                      value={selectedUnidade ? unidadesOptions.find(opt => opt.id.toString() === selectedUnidade)?.label || null : null}
+                    />
+                    <div className="flex ml-2"></div>
+                    <ReguaDePag
+                      paginaAtual={paginaAtual}
+                      totalPaginas={totalPaginas}
+                      totalItems={totalItems}
+                      mostrarRegua={totalItems > 100}
+                      onChange={(pagina) => {
+                        setPaginaAtual(pagina);
+                        // Verificar se há um cliente selecionado
+                        if (selectedOption) {
+                          const codcli = parseInt(selectedOption);
+                          // Se o checkbox "Todas Ufs" estiver marcado, usar "ZZ" como UF
+                          if (todasUfs) {
+                            fetchUnidades(codcli, "ZZ", pagina);
+                          }
+                          // Caso contrário, usar a UF selecionada (se houver)
+                          else if (selectedUf) {
+                            fetchUnidades(codcli, selectedUf, pagina);
+                          }
                         }
-                        // Caso contrário, usar a UF selecionada (se houver)
-                        else if (selectedUf) {
-                          fetchUnidades(codcli, selectedUf, pagina);
-                        }
-                      }
-                    }}
-                  />   </div>
-                {/* Terceira linha de componentes - Botoes Editar, Ocorrencias, Custos */}
-                <div className="flex flex-row items-center">
-                  <Botao
-                    texto="Editar"
-                    icone={<IconEdit />}
-                    className="ml-2"
-                    cor="bg-blue-500"
-                    redondo={false}
-                    tamanho="lg"
-                    larguraFixa={180}
-                  />
-                  <Botao
-                    texto="Ocorrências"
-                    icone={<IconFileText />}
-                    className="ml-2"
-                    cor="bg-blue-500"
-                    redondo={false}
-                    tamanho="lg"
-                    larguraFixa={180}
-                  />
-                  <Botao
-                    texto="Custos"
-                    icone={<IconFileText />}
-                    className="ml-2"
-                    cor="bg-blue-500"
-                    redondo={false}
-                    tamanho="lg"
-                    larguraFixa={180}
-                  />
-                  <Botao
-                    texto="Ord.Compra"
-                    icone={<IconCalculatorFilled />}
-                    className="ml-2"
-                    cor="bg-blue-500"
-                    redondo={false}
-                    tamanho="lg"
-                    larguraFixa={180}
-                  />
-                  <Botao
-                    texto="Edit.Tarefas"
-                    icone={<IconEdit />}
-                    className="ml-2"
-                    cor="bg-blue-500"
-                    redondo={false}
-                    tamanho="lg"
-                    larguraFixa={180}
-                  />
-                  <Botao
-                    texto="Rescisão"
-                    icone={<IconEdit />}
-                    className="ml-2"
-                    cor="bg-blue-500"
-                    redondo={false}
-                    tamanho="lg"
-                    larguraFixa={180}
-                  />
-                  <Botao
-                    texto="Pendenciar"
-                    icone={<IconEdit />}
-                    className="ml-2"
-                    cor="bg-blue-500"
-                    redondo={false}
-                    tamanho="lg"
-                    larguraFixa={180}
-                  />
-                  <div></div>
+                      }}
+                    />   </div>
+                  {/* Terceira linha de componentes - Botoes Editar, Ocorrencias, Custos */}
+                  <div className="flex flex-row items-center">
+                    <Botao
+                      texto="Editar"
+                      icone={<IconEdit />}
+                      className="ml-2"
+                      cor="bg-blue-500"
+                      redondo={false}
+                      tamanho="xs"  //"xs" | "md" | "lg" | "xl" | "2xl" | "3xl";
+                      larguraFixa={110}
+                    />
+                    <Botao
+                      texto="Ocorrências"
+                      icone={<IconFileText />}
+                      className="ml-2"
+                      cor="bg-blue-500"
+                      redondo={false}
+                      tamanho="xs"
+                      larguraFixa={110}
+                    />
+                    <Botao
+                      texto="Custos"
+                      icone={<IconFileText />}
+                      className="ml-2"
+                      cor="bg-blue-500"
+                      redondo={false}
+                      tamanho="xs"
+                      larguraFixa={110}
+                    />
+                    <Botao
+                      texto="Ord.Compra"
+                      icone={<IconCalculatorFilled />}
+                      className="ml-2"
+                      cor="bg-blue-500"
+                      redondo={false}
+                      tamanho="xs"
+                      larguraFixa={110}
+                    />
+                    <Botao
+                      texto="Edit.Tarefas"
+                      icone={<IconEdit />}
+                      className="ml-2"
+                      cor="bg-blue-500"
+                      redondo={false}
+                      tamanho="xs"
+                      larguraFixa={110}
+                    />
+                    <Botao
+                      texto="Rescisão"
+                      icone={<IconEdit />}
+                      className="ml-2"
+                      cor="bg-blue-500"
+                      redondo={false}
+                      tamanho="xs"
+                      larguraFixa={110}
+                    />
+                    <Botao
+                      texto="Pendenciar"
+                      icone={<IconEdit />}
+                      className="ml-2"
+                      cor="bg-blue-500"
+                      redondo={false}
+                      tamanho="xs"
+                      larguraFixa={110}
+                    />
+                    <div></div>
+                  </div>
                 </div>
               </div>
-              {/* Segunda coluna do painel superior */}
-              <div className="flex flex-col bg-zinc-600 shadow-md rounded-md p-4 h-400 ml-10 mb-2">
+              {/* Segunda coluna do painel superior - passa para baixo em telas < 1600px */}
+              <div className="flex flex-col bg-zinc-600 shadow-md rounded-md p-4 h-400 mt-4 2xl:mt-0 2xl:ml-10 mb-2 w-full 2xl:w-auto">
                 {/* Primeira linha da segunda coluna de componentes - Checkboxs */}
                 <div className="flex flex-row items-center">
                   <CheckBox className="flex ml-2"
@@ -608,13 +615,13 @@ export default function PagGerente() {
                 {/* Terceira linha da segunda coluna de componentes - Checkboxs  */}
                 <div className="flex flex-row items-center mt-5">
                   <div className="flex ml-2">Gerencia Mauro</div>
-                <div className="ml-4"></div>
-                <InputFormatado
+                  <div className="ml-4"></div>
+                  <InputFormatado
                     label="H.Tramit."
                     tipo="text"
                     valor={""}
                     tamanho={20}
-                  
+
                   />
                   <div className="ml-4"></div>
                   <InputFormatado
@@ -623,7 +630,7 @@ export default function PagGerente() {
                     valor={""}
                     tamanho={20}
                   />
-                   <div className="ml-8"></div>
+                  <div className="ml-8"></div>
                   <InputFormatado
                     label="TE Assec."
                     tipo="text"
@@ -640,7 +647,9 @@ export default function PagGerente() {
                 </div>
               </div>
             </div>
-            <div className="flex flex-col bg-slate-400 shadow-md rounded-md p-4">
+
+            {/* Div com dropdown e TableConform - sempre abaixo das colunas superiores */}
+            <div className="flex flex-col bg-slate-400 shadow-md rounded-md p-4 mt-4 w-full">
               <DropDown
                 largura='300px'
                 placeholder="Selecione um CNPJ"
@@ -661,7 +670,6 @@ export default function PagGerente() {
                 temcnpj={false}
               />
             </div>
-
           </div>
         </PaginaSemMenu>
       )}
