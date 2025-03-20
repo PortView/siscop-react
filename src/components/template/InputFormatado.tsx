@@ -5,19 +5,21 @@ interface InputFormatadoProps {
     onInput?: (e: any) => any;
     className?: string;
     tamanho?: number;
+    step?: number;
 }
 
 export default function InputFormatado(props: InputFormatadoProps) {
     return (
         <>
-            <label className="m-1">{props.label}</label>
+            <label className="mr-2 text-xs text-white">{props.label}</label>
             <input
                 type={props.tipo}
                 value={props.valor}
                 onInput={props.onInput}
+                step={props.step}
                 className={`
-                    text-gray-600 px-2 
-                    w-${props.tamanho} h-11 rounded-md
+                    text-black text-xs
+                    w-${props.tamanho} h-8 rounded-md
                     ${props.className ?? ''}
                 `}
             />

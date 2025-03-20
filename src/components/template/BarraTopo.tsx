@@ -51,7 +51,7 @@ export default function BarraTopo() {
   };
 
   return (
-    <div className="flex justify-between items-center w-full bg-gray-800 p-2 shadow-md">
+    <div className="flex justify-between items-center w-full bg-gray-800 p-2 ">
       {/* Logo da aplicação */}
       <div className="flex items-center">
         <span className="text-2xl font-bold text-white">SISCOP - Área do Gerente</span>
@@ -67,13 +67,14 @@ export default function BarraTopo() {
           <span className="text-gray-300 text-sm">{cargoUsuario}</span>
         </div>
         <Botao
-          texto="Sair"
+          texto=""
           icone={<IconLogout />}
           tamanhoIcone={20}
-          cor="bg-red-600"
+          cor=""
           onClick={handleLogout}
-          tamanho="md"
-          className="text-white"
+          tamanho="xs"
+          className="text-zinc-400 hover:text-white mr-4"
+          larguraFixa={40}
         />
       </div>
     </div>

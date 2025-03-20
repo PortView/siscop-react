@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "@tabler/icons": "^1.117.0",
-    "@tabler/icons-react": "^3.30.0",
+    "@tabler/icons-react": "^3.31.0",
     "@types/axios": "^0.9.36",
     "@types/js-cookie": "^3.0.6",
     "axios": "^1.8.1",
@@ -22,6 +22,7 @@
     "tailwind-scrollbar": "^3.0.5"
   },
   "devDependencies": {
+    "@playwright/test": "^1.51.0",
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",

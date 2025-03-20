@@ -7,6 +7,7 @@ interface CheckBoxProps {
     onChange?: (checked: boolean) => void;
     className?: string;
     disabled?: boolean;
+    tamanhoFonte?: string; // xs | md | lg | xl | 2xl | 3xl
 }
 
 export default function CheckBox({
@@ -15,7 +16,8 @@ export default function CheckBox({
     checked: externalChecked,
     onChange,
     className = '',
-    disabled = false
+    disabled = false,
+    tamanhoFonte = "md"
 }: CheckBoxProps) {
     const [internalChecked, setInternalChecked] = useState(externalChecked || false);
     
@@ -37,12 +39,22 @@ export default function CheckBox({
             onChange(newValue);
         }
     };
+
+    // Função para determinar o tamanho da fonte com base no parâmetro tamanhoFonte
+    function tamanho() {
+        if (tamanhoFonte === "xs") return "text-xs"; // 12px
+        if (tamanhoFonte === "lg") return "text-lg"; // 18px
+        if (tamanhoFonte === "xl") return "text-xl"; // 20px
+        if (tamanhoFonte === "2xl") return "text-2xl"; // 24px
+        if (tamanhoFonte === "3xl") return "text-3xl"; // 30px
+        return "text-sm"; // 14px (padrão para md)
+    }
     
     return (
         <div className={`inline-flex items-center ${className}`}>
             {labelPosition === 'left' && label && (
                 <span 
-                    className={`mr-2 select-none whitespace-nowrap ${disabled ? 'text-gray-400' : 'text-white'}`}
+                    className={`mr-2 select-none whitespace-nowrap ${tamanho()} ${disabled ? 'text-gray-400' : 'text-white'}`}
                     onClick={!disabled ? handleChange : undefined}
                 >
                     {label}
@@ -79,7 +91,7 @@ export default function CheckBox({
             
             {labelPosition === 'right' && label && (
                 <span 
-                className={`ml-2 select-none whitespace-nowrap ${disabled ? 'text-gray-400' : 'text-white'}`}
+                className={`ml-2 select-none whitespace-nowrap ${tamanho()} ${disabled ? 'text-gray-400' : 'text-white'}`}
                     onClick={!disabled ? handleChange : undefined}
                 >
                     {label}

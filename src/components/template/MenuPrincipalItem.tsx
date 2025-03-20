@@ -1,4 +1,4 @@
-import { IconCode } from "@tabler/icons";
+import { IconCode } from "@tabler/icons-react";
 import Link from "next/link";
 import { useRouter } from "next/router";
 

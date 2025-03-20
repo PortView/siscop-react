@@ -1,4 +1,4 @@
-import { IconFishHook } from "@tabler/icons";
+import { IconFishHook } from "@tabler/icons-react";
 import Link from "next/link";
 import Flex from "./Flex";
 

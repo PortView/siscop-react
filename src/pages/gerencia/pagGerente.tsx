@@ -372,22 +372,22 @@ export default function PagGerente() {
             {loading && <div className="text-blue-600 bg-transparent px-4 py-2 rounded">Carregando clientes...</div>}
             {loadingUnidades && <div className="text-blue-600 bg-transparent px-4 py-2 rounded">Carregando unidades...</div>}
           </div>
-          <div className="w-[calc(100vw-40px)] flex flex-col">
+          <div className="w-[calc(100vw-10px)] flex flex-col">
             {/* Painel superior com responsividade para telas menores que 1600px */}
             <div className="flex flex-col 2xl:flex-row items-start 2xl:items-start">
 
               {/* Primeira coluna do painel superior */}
-              <div className="flex flex-col mb-2 w-full 2xl:w-auto">
-                <div className="flex flex-col mb-2">
+              <div className="flex flex-col bg-zinc-600 shadow-md rounded-md p-2 mr-2 w-full 2xl:w-auto">
+                <div className="flex flex-col">
                   {/* Primeira linha de componentes - Clientes, Uf, Todas Ufs, Bt-Planilhas, Bt-Contrato */}
-                  <div className="flex flex-center flex-row items-center ">
+                  <div className="flex flex-row items-center ">
                     <DropDown
                       largura='280px'
                       placeholder="Clientes"
                       label=""
                       options={clientesOptions}
                       onChange={handleClienteChange}
-                      tamanhoFonte= "xs" //| "md" | "lg" | "xl" | "2xl" | "3xl";
+                      tamanhoFonte="xs" //| "md" | "lg" | "xl" | "2xl" | "3xl";
                     />
                     <div className="ml-2">
                       <DropDown
@@ -401,12 +401,13 @@ export default function PagGerente() {
                         tamanhoFonte="xs"
                       />
                     </div>
-                    <CheckBox className="flex ml-2 mr-2"
+                    <CheckBox className="flex ml-2 mr-2.5"
                       label="Todas Ufs"
                       labelPosition="left"
                       checked={todasUfs}
                       onChange={(checked) => handleTodasUfsChange(checked)}
                       disabled={!selectedOption} // Desabilitar o checkbox quando nenhum cliente estiver selecionado
+                      tamanhoFonte="xs"
                     />
 
                     <Botao
@@ -530,12 +531,22 @@ export default function PagGerente() {
                       tamanho="xs"
                       larguraFixa={110}
                     />
-                    <div></div>
+                    <Botao
+                      texto="TailWind"
+                      icone={<IconEdit />}
+                      className="ml-2"
+                      cor="bg-green-500"
+                      redondo={false}
+                      tamanho="xs"
+                      larguraFixa={110}
+                      onClick={() => router.push('/tailwind')}
+                    />
                   </div>
                 </div>
               </div>
+
               {/* Segunda coluna do painel superior - passa para baixo em telas < 1600px */}
-              <div className="flex flex-col bg-zinc-600 shadow-md rounded-md p-4 h-400 mt-4 2xl:mt-0 2xl:ml-10 mb-2 w-full 2xl:w-auto">
+              <div className="flex flex-col bg-zinc-600 shadow-md rounded-md p-2 w-full 2xl:w-auto">
                 {/* Primeira linha da segunda coluna de componentes - Checkboxs */}
                 <div className="flex flex-row items-center">
                   <CheckBox className="flex ml-2"
@@ -544,6 +555,7 @@ export default function PagGerente() {
                     checked={true}
                     onChange={(checked) => handleTodasUfsChange(checked)}
                     disabled={false} // Desabilitar o checkbox quando nenhum cliente estiver selecionado
+                    tamanhoFonte="xs"
                   />
                   <CheckBox className="flex ml-20 "
                     label="Status"
@@ -614,13 +626,16 @@ export default function PagGerente() {
                 </div>
                 {/* Terceira linha da segunda coluna de componentes - Checkboxs  */}
                 <div className="flex flex-row items-center mt-5">
-                  <div className="flex ml-2">Gerencia Mauro</div>
+                  <div className="flex ml-2 text-xs text-white">Gerencia Mauro</div>
+
                   <div className="ml-4"></div>
                   <InputFormatado
                     label="H.Tramit."
-                    tipo="text"
-                    valor={""}
-                    tamanho={20}
+                    tipo="number"
+                    valor={"915.22"}
+                    step={0.00}
+                    tamanho={16}
+                    className="text-right"
 
                   />
                   <div className="ml-4"></div>
@@ -628,21 +643,21 @@ export default function PagGerente() {
                     label="H.Assec."
                     tipo="text"
                     valor={""}
-                    tamanho={20}
+                    tamanho={16}
                   />
                   <div className="ml-8"></div>
                   <InputFormatado
                     label="TE Assec."
                     tipo="text"
                     valor={""}
-                    tamanho={20}
+                    tamanho={16}
                   />
                   <div className="ml-4"></div>
                   <InputFormatado
                     label="TE Assec."
                     tipo="text"
                     valor={""}
-                    tamanho={20}
+                    tamanho={16}
                   />
                 </div>
               </div>

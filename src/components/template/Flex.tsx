@@ -13,7 +13,7 @@ export default function Flex(props: FlexProps) {
         <div className={`
             flex
             ${props.col ? 'flex-col' : ''}
-            ${props.gap != null ? `gap-${props.gap}` : 'gap-3'}
+            ${props.gap != null ? `gap-${props.gap}` : 'gap-2'}
             ${props.center ? 'justify-center items-center' : ''}
             ${props.centerMain ? 'justify-center' : ''}
             ${props.centerCross ? 'items-center' : ''}

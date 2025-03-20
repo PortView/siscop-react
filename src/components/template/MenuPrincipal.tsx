@@ -1,4 +1,4 @@
-//import { IconMenu, IconX } from "@tabler/icons";
+//import { IconMenu, IconX } from "@tabler/icons-react";
 import { MenuItem } from "../../data/models/MenuItem";
 import { MenuSecao } from "../../data/models/MenuSecao";
 import Logo from "./Logo";

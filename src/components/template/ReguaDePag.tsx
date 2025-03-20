@@ -114,7 +114,7 @@ export default function ReguaDePag({
   }
 
   return (
-    <div className="flex items-center space-x-2 ml-2">
+    <div className="flex items-center space-x-1 ml-2">
       {/* Botão para primeira página */}
       <button
         onClick={irParaPrimeiraPagina}

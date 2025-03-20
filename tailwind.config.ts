@@ -14,5 +14,13 @@ const config: Config = {
         { pattern: /^bg-/ },
     ],
     plugins: [require("tailwind-scrollbar")],
+    theme: {
+        extend: {
+          screens: {
+            '2xlb': '1680px', // você pode usar qualquer nome, mas '2xl' é uma boa escolha
+          },
+        },
+      },
+
 };
 module.exports = config;

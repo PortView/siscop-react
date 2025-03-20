@@ -1,4 +1,4 @@
-import { IconMinus, IconPlus } from "@tabler/icons";
+import { IconMinus, IconPlus } from "@tabler/icons-react";
 import Flex from "./Flex";
 
 interface MenuSecaoProps {
