@@ -12,7 +12,7 @@ export interface BotaoProps {
 
 export default function Botao(props: BotaoProps) {
 	function tamanho() {
-		if (props.tamanho === "xs") return 9;
+		if (props.tamanho === "xs") return 8;
 		if (props.tamanho === "lg") return 14;
 		if (props.tamanho === "xl") return 16;
 		if (props.tamanho === "2xl") return 20;

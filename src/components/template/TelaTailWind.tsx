@@ -13,9 +13,11 @@ export default function TelaTailWind() {
                 <div className="w-full max-w-[1920px] mx-auto">
                     {/* Container do conteúdo - flex-col em telas menores, organizado em telas grandes */}
                     <div className="flex flex-col items-center bg-zinc-400 p-1 gap-1 mb-2">
+                        
                         {/* Área superior - containers lado a lado em telas grandes */}
                         <div className="w-full flex flex-col 2xlb:flex-row 2xl:justify-center gap-1">
                             {/* Primeira coluna com largura fixa */}
+
                             <div className="flex w-[940px] h-[140px] flex-col p-1 bg-amber-400 text-xs rounded-md shadow-md">
                                 <div className="flex flex-row">
                                     <DropDown
@@ -128,9 +130,23 @@ export default function TelaTailWind() {
                         <div className="w-full flex justify-center">
                             <div className="flex h-[360px] w-full max-w-[1764px] bg-orange-300 rounded-md shadow-md">Grade Conformidades</div>
                         </div>
+
                     </div>
                 </div>
             </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
 
             <div className="hidden columns-2">
                 <p>Well, let me tell you something, ...</p>

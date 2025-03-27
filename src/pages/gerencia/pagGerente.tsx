@@ -12,6 +12,7 @@ import CheckBox from '@/components/template/CheckBox'
 import ReguaDePag from '@/components/template/ReguaDePag'
 import { Icon123, IconCalculatorFilled, IconEdit, IconFileText, IconNumber123 } from '@tabler/icons-react'
 import InputFormatado from '@/components/template/InputFormatado'
+import BarraTopo from '@/components/template/BarraTopo'
 
 interface Cliente {
   codcli: number;
@@ -66,6 +67,12 @@ export default function PagGerente() {
   const [totalPaginas, setTotalPaginas] = useState<number>(1)
   const [totalItems, setTotalItems] = useState<number>(0)
 
+  // Estado para armazenar as dimensões da tela
+  const [windowSize, setWindowSize] = useState({
+    width: typeof window !== 'undefined' ? window.innerWidth : 0,
+    height: typeof window !== 'undefined' ? window.innerHeight : 0,
+  });
+
   useEffect(() => {
     // Verifica se o usuário está autenticado
     const token = Cookies.get('auth_token')
@@ -76,6 +83,25 @@ export default function PagGerente() {
       fetchClientes(token)
     }
   }, [])
+
+  useEffect(() => {
+    // Função para atualizar o estado com as dimensões atuais
+    const handleResize = () => {
+      setWindowSize({
+        width: window.innerWidth,
+        height: window.innerHeight,
+      });
+    };
+
+    // Adiciona o evento de listener para redimensionamento
+    window.addEventListener('resize', handleResize);
+
+    // Garante que as dimensões iniciais sejam definidas corretamente
+    handleResize();
+
+    // Remove o listener quando o componente for desmontado
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   const fetchClientes = async (token: string) => {
     try {
@@ -366,328 +392,355 @@ export default function PagGerente() {
           <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
         </div>
       ) : (
-        <PaginaSemMenu>
+        <div>
+
+          <BarraTopo />
           {/* Avisos de carregamento no topo da página à direita */}
           <div className="fixed top-4 right-4 z-50 text-sm">
             {loading && <div className="text-blue-600 bg-transparent px-4 py-2 rounded">Carregando clientes...</div>}
             {loadingUnidades && <div className="text-blue-600 bg-transparent px-4 py-2 rounded">Carregando unidades...</div>}
           </div>
-          <div className="w-[calc(100vw-10px)] flex flex-col">
-            {/* Painel superior com responsividade para telas menores que 1600px */}
-            <div className="flex flex-col 2xl:flex-row items-start 2xl:items-start">
 
-              {/* Primeira coluna do painel superior */}
-              <div className="flex flex-col bg-zinc-600 shadow-md rounded-md p-2 mr-2 w-full 2xl:w-auto">
-                <div className="flex flex-col">
-                  {/* Primeira linha de componentes - Clientes, Uf, Todas Ufs, Bt-Planilhas, Bt-Contrato */}
-                  <div className="flex flex-row items-center ">
-                    <DropDown
-                      largura='280px'
-                      placeholder="Clientes"
-                      label=""
-                      options={clientesOptions}
-                      onChange={handleClienteChange}
-                      tamanhoFonte="xs" //| "md" | "lg" | "xl" | "2xl" | "3xl";
-                    />
-                    <div className="ml-2">
+          {/* Container principal com largura total e centralização de conteúdo */}
+          <div className="w-full flex justify-center">
+            {/* Container interno com largura máxima e centralização */}
+            <div className="w-full max-w-[1920px] flex flex-col">
+              {/* Container do conteúdo - flex-col em telas menores, organizado em telas grandes */}
+              <div className="flex flex-col items-center bg-zinc-400 p-1 gap-1 mb-2">
+
+                {/* Área superior - containers lado a lado em telas grandes */}
+                <div className="flex w-full max-w-[1920px] flex-col 2xlb:flex-row gap-1 justify-center items-center">
+                  {/* Primeira coluna com largura fixa */}
+                  <div className="flex flex-col w-[940px] h-[150px]  p-1 bg-amber-400 text-xs rounded-md shadow-md">
+                    {/* Primeira linha de componentes - Clientes, UF */}
+                    <div className="flex flex-row gap-1 w-[940px]">
                       <DropDown
-                        largura='120px'
-                        placeholder="UF"
+                        largura='280px'
+                        placeholder="Clientes"
                         label=""
-                        options={ufsOptions}
-                        onChange={handleUfChange}
-                        value={selectedUf}
-                        disabled={todasUfs} // Desabilitar o dropdown quando o checkbox estiver marcado
+                        options={clientesOptions}
+                        onChange={handleClienteChange}
+                        tamanhoFonte="xs" //| "md" | "lg" | "xl" | "2xl" | "3xl";
+                      />
+                      <div className="">
+                        <DropDown
+                          largura='120px'
+                          placeholder="UF"
+                          label=""
+                          options={ufsOptions}
+                          onChange={handleUfChange}
+                          value={selectedUf}
+                          disabled={todasUfs} // Desabilitar o dropdown quando o checkbox estiver marcado
+                          tamanhoFonte="xs"
+                        />
+                      </div>
+                      <CheckBox className="flex mr-1"
+                        label="Todas Ufs"
+                        labelPosition="left"
+                        checked={todasUfs}
+                        onChange={(checked) => handleTodasUfsChange(checked)}
+                        disabled={!selectedOption} // Desabilitar o checkbox quando nenhum cliente estiver selecionado
                         tamanhoFonte="xs"
                       />
+
+                      <Botao
+                        texto="Planilhas"
+                        className=""
+                        cor="bg-blue-500"
+                        redondo={false}
+                        tamanho="xs"
+                        larguraFixa={110}
+                        icone={<IconFileText />}
+                        tamanhoIcone={28} // Definindo um tamanho maior para o ícone
+                      />
+                      <Botao
+                        texto={`Contr: ${selectedContrato ? selectedContrato.toString().padStart(5, '0') : ''}`}
+                        className=""
+                        cor="bg-blue-500"
+                        redondo={false}
+                        tamanho="xs"
+                        larguraFixa={130}
+                        onClick={() => router.push('/tailwind')}
+                      />
                     </div>
-                    <CheckBox className="flex ml-2 mr-2.5"
-                      label="Todas Ufs"
-                      labelPosition="left"
-                      checked={todasUfs}
-                      onChange={(checked) => handleTodasUfsChange(checked)}
-                      disabled={!selectedOption} // Desabilitar o checkbox quando nenhum cliente estiver selecionado
-                      tamanhoFonte="xs"
-                    />
-
-                    <Botao
-                      texto="Planilhas"
-                      className="ml-2"
-                      cor="bg-blue-500"
-                      redondo={false}
-                      tamanho="xs"
-                      larguraFixa={110}
-                      icone={<IconFileText />}
-                      tamanhoIcone={28} // Definindo um tamanho maior para o ícone
-                    />
-                    <Botao
-                      texto={`Contr: ${selectedContrato ? selectedContrato.toString().padStart(5, '0') : ''}`}
-                      className="ml-2"
-                      cor="bg-blue-500"
-                      redondo={false}
-                      tamanho="xs"
-                      larguraFixa={120}
-                    />
-                  </div>
-                  {/* Segunda linha de componentes - Unidades, Regua de Paginação */}
-                  <div className="flex flex-center flex-row items-center">
-                    <DropDown
-                      largura='450px'
-                      placeholder="Unidades"
-                      label="Unidades"
-                      containerClassName="flex mt-2 mb-2"
-                      options={unidadesOptions.map(option => ({
-                        id: option.id,
-                        label: option.label,
-                        tamanhoFonte: "xs"
-                      }))}
-                      onChange={handleUnidadeChange}
-                      value={selectedUnidade ? unidadesOptions.find(opt => opt.id.toString() === selectedUnidade)?.label || null : null}
-                    />
-                    <div className="flex ml-2"></div>
-                    <ReguaDePag
-                      paginaAtual={paginaAtual}
-                      totalPaginas={totalPaginas}
-                      totalItems={totalItems}
-                      mostrarRegua={totalItems > 100}
-                      onChange={(pagina) => {
-                        setPaginaAtual(pagina);
-                        // Verificar se há um cliente selecionado
-                        if (selectedOption) {
-                          const codcli = parseInt(selectedOption);
-                          // Se o checkbox "Todas Ufs" estiver marcado, usar "ZZ" como UF
-                          if (todasUfs) {
-                            fetchUnidades(codcli, "ZZ", pagina);
+                    {/* Segunda linha de componentes - Unidades, Regua de Paginação */}
+                    <div className="flex flex-center flex-row items-center">
+                      <DropDown
+                        largura='450px'
+                        placeholder="Unidades"
+                        label="Unidades"
+                        containerClassName="flex mt-2 mb-2"
+                        options={unidadesOptions.map(option => ({
+                          id: option.id,
+                          label: option.label,
+                          tamanhoFonte: "xs"
+                        }))}
+                        onChange={handleUnidadeChange}
+                        value={selectedUnidade ? unidadesOptions.find(opt => opt.id.toString() === selectedUnidade)?.label || null : null}
+                      />
+                      <div className="flex"></div>
+                      <ReguaDePag
+                        paginaAtual={paginaAtual}
+                        totalPaginas={totalPaginas}
+                        totalItems={totalItems}
+                        mostrarRegua={totalItems > 100}
+                        onChange={(pagina) => {
+                          setPaginaAtual(pagina);
+                          // Verificar se há um cliente selecionado
+                          if (selectedOption) {
+                            const codcli = parseInt(selectedOption);
+                            // Se o checkbox "Todas Ufs" estiver marcado, usar "ZZ" como UF
+                            if (todasUfs) {
+                              fetchUnidades(codcli, "ZZ", pagina);
+                            }
+                            // Caso contrário, usar a UF selecionada (se houver)
+                            else if (selectedUf) {
+                              fetchUnidades(codcli, selectedUf, pagina);
+                            }
                           }
-                          // Caso contrário, usar a UF selecionada (se houver)
-                          else if (selectedUf) {
-                            fetchUnidades(codcli, selectedUf, pagina);
-                          }
-                        }
-                      }}
-                    />   </div>
-                  {/* Terceira linha de componentes - Botoes Editar, Ocorrencias, Custos */}
-                  <div className="flex flex-row items-center">
-                    <Botao
-                      texto="Editar"
-                      icone={<IconEdit />}
-                      className="ml-2"
-                      cor="bg-blue-500"
-                      redondo={false}
-                      tamanho="xs"  //"xs" | "md" | "lg" | "xl" | "2xl" | "3xl";
-                      larguraFixa={110}
-                    />
-                    <Botao
-                      texto="Ocorrências"
-                      icone={<IconFileText />}
-                      className="ml-2"
-                      cor="bg-blue-500"
-                      redondo={false}
-                      tamanho="xs"
-                      larguraFixa={110}
-                    />
-                    <Botao
-                      texto="Custos"
-                      icone={<IconFileText />}
-                      className="ml-2"
-                      cor="bg-blue-500"
-                      redondo={false}
-                      tamanho="xs"
-                      larguraFixa={110}
-                    />
-                    <Botao
-                      texto="Ord.Compra"
-                      icone={<IconCalculatorFilled />}
-                      className="ml-2"
-                      cor="bg-blue-500"
-                      redondo={false}
-                      tamanho="xs"
-                      larguraFixa={110}
-                    />
-                    <Botao
-                      texto="Edit.Tarefas"
-                      icone={<IconEdit />}
-                      className="ml-2"
-                      cor="bg-blue-500"
-                      redondo={false}
-                      tamanho="xs"
-                      larguraFixa={110}
-                    />
-                    <Botao
-                      texto="Rescisão"
-                      icone={<IconEdit />}
-                      className="ml-2"
-                      cor="bg-blue-500"
-                      redondo={false}
-                      tamanho="xs"
-                      larguraFixa={110}
-                    />
-                    <Botao
-                      texto="Pendenciar"
-                      icone={<IconEdit />}
-                      className="ml-2"
-                      cor="bg-blue-500"
-                      redondo={false}
-                      tamanho="xs"
-                      larguraFixa={110}
-                    />
-                    <Botao
-                      texto="TailWind"
-                      icone={<IconEdit />}
-                      className="ml-2"
-                      cor="bg-green-500"
-                      redondo={false}
-                      tamanho="xs"
-                      larguraFixa={110}
-                      onClick={() => router.push('/tailwind')}
-                    />
+                        }}
+                      />   </div>
+                    {/* Terceira linha de componentes - Botoes Editar, Ocorrencias, Custos */}
+                    <div className="flex flex-row items-center">
+                      <Botao
+                        texto="Editar"
+                        icone={<IconEdit />}
+                        className="ml-2"
+                        cor="bg-blue-500"
+                        redondo={false}
+                        tamanho="xs"  //"xs" | "md" | "lg" | "xl" | "2xl" | "3xl";
+                        larguraFixa={100}
+                      />
+                      <Botao
+                        texto="Ocorrências"
+                        icone={<IconFileText />}
+                        className="ml-2"
+                        cor="bg-blue-500"
+                        redondo={false}
+                        tamanho="xs"
+                        larguraFixa={100}
+                      />
+                      <Botao
+                        texto="Custos"
+                        icone={<IconFileText />}
+                        className="ml-2"
+                        cor="bg-blue-500"
+                        redondo={false}
+                        tamanho="xs"
+                        larguraFixa={100}
+                      />
+                      <Botao
+                        texto="Ord.Compra"
+                        icone={<IconCalculatorFilled />}
+                        className="ml-2"
+                        cor="bg-blue-500"
+                        redondo={false}
+                        tamanho="xs"
+                        larguraFixa={100}
+                      />
+                      <Botao
+                        texto="Edit.Tarefas"
+                        icone={<IconEdit />}
+                        className="ml-2"
+                        cor="bg-blue-500"
+                        redondo={false}
+                        tamanho="xs"
+                        larguraFixa={100}
+                      />
+                      <Botao
+                        texto="Rescisão"
+                        icone={<IconEdit />}
+                        className="ml-2"
+                        cor="bg-blue-500"
+                        redondo={false}
+                        tamanho="xs"
+                        larguraFixa={100}
+                      />
+                      <Botao
+                        texto="Pendenciar"
+                        icone={<IconEdit />}
+                        className="ml-2"
+                        cor="bg-blue-500"
+                        redondo={false}
+                        tamanho="xs"
+                        larguraFixa={100}
+                      />
+                      {/*<Botao
+                        className="hidden"
+                        texto="TailWind"
+                        icone={<IconEdit />}
+                        cor="bg-green-500"
+                        redondo={false}
+                        tamanho="xs"
+                        larguraFixa={110}
+                        onClick={() => router.push('/tailwind')}
+                      />*/}
+                    </div>
+                  </div>
+
+                  {/* Segunda coluna do painel superior - passa para baixo em telas < 1600px */}
+                  <div className="flex flex-col w-[940px] h-[150px] gap-1 bg-amber-600 p-2 rounded-md shadow-md">
+                    {/* Primeira linha da segunda coluna de componentes - Checkboxs */}
+                    <div className="flex flex-row items-center w-full">
+                      <CheckBox className="flex ml-2"
+                        label="Cód.Serv."
+                        labelPosition="left"
+                        checked={true}
+                        onChange={(checked) => handleTodasUfsChange(checked)}
+                        disabled={false} // Desabilitar o checkbox quando nenhum cliente estiver selecionado
+                        tamanhoFonte="xs"
+                      />
+                      <CheckBox className="flex ml-20 "
+                        label="Status"
+                        labelPosition="left"
+                        checked={true}
+                        onChange={(checked) => handleTodasUfsChange(checked)}
+                        disabled={false} // Desabilitar o checkbox quando nenhum cliente estiver selecionado
+                      />
+                      <CheckBox className="flex ml-20"
+                        label="Dt.Limite"
+                        labelPosition="left"
+                        checked={true}
+                        onChange={(checked) => handleTodasUfsChange(checked)}
+                        disabled={false} // Desabilitar o checkbox quando nenhum cliente estiver selecionado
+                      /></div>
+                    {/* Segunda linha da segunda coluna de componentes - Checkboxs */}
+                    <div className="flex flex-row items-center mt-5">
+                      <CheckBox className="flex"
+                        label="Conc."
+                        labelPosition="left"
+                        checked={true}
+                        onChange={(checked) => handleTodasUfsChange(checked)}
+                        disabled={false} // Desabilitar o checkbox quando nenhum cliente estiver selecionado
+
+                      />
+                      <CheckBox className="flex"
+                        label="Novos"
+                        labelPosition="left"
+                        checked={true}
+                        onChange={(checked) => handleTodasUfsChange(checked)}
+                        disabled={false} // Desabilitar o checkbox quando nenhum cliente estiver selecionado
+                      />
+                      <CheckBox className="flex"
+                        label="Suspensos"
+                        labelPosition="left"
+                        checked={true}
+                        onChange={(checked) => handleTodasUfsChange(checked)}
+                        disabled={false} // Desabilitar o checkbox quando nenhum cliente estiver selecionado
+                      />
+                      <CheckBox className="flex"
+                        label="Sem nota"
+                        labelPosition="left"
+                        checked={true}
+                        onChange={(checked) => handleTodasUfsChange(checked)}
+                        disabled={false} // Desabilitar o checkbox quando nenhum cliente estiver selecionado
+                      />
+                      <CheckBox className="flex"
+                        label="Pendência"
+                        labelPosition="left"
+                        checked={true}
+                        onChange={(checked) => handleTodasUfsChange(checked)}
+                        disabled={false} // Desabilitar o checkbox quando nenhum cliente estiver selecionado
+                      />
+                      <CheckBox className="flex"
+                        label="Doc.Internet"
+                        labelPosition="left"
+                        checked={true}
+                        onChange={(checked) => handleTodasUfsChange(checked)}
+                        disabled={false} // Desabilitar o checkbox quando nenhum cliente estiver selecionado
+                      />
+                      <CheckBox className="flex"
+                        label="Só O.S."
+                        labelPosition="left"
+                        checked={true}
+                        onChange={(checked) => handleTodasUfsChange(checked)}
+                        disabled={false} // Desabilitar o checkbox quando nenhum cliente estiver selecionado
+                      />
+                    </div>
+                    {/* Terceira linha da segunda coluna de componentes - Checkboxs  */}
+                    <div className="flex flex-row items-center mt-5">
+                      <div className="flex ml-2 text-xs text-white">Gerencia Mauro</div>
+
+                      <div className="ml-4"></div>
+                      <InputFormatado
+                        label="H.Tramit."
+                        tipo="number"
+                        valor={"915.22"}
+                        step={0.00}
+                        tamanho={16}
+                        className="text-right"
+
+                      />
+                      <div className="ml-4"></div>
+                      <InputFormatado
+                        label="H.Assec."
+                        tipo="text"
+                        valor={""}
+                        tamanho={16}
+                      />
+                      <div className="ml-8"></div>
+                      <InputFormatado
+                        label="TE Assec."
+                        tipo="text"
+                        valor={""}
+                        tamanho={16}
+                      />
+                      <div className="ml-4"></div>
+                      <InputFormatado
+                        label="TE Assec."
+                        tipo="text"
+                        valor={""}
+                        tamanho={16}
+                      />
+                    </div>
+                  </div>
+
+                </div>
+
+                {/* Área Informações - container único */}
+                <div className='hidden'>
+                  <div className="w-full flex justify-center">
+                    <div className="flex h-[260px] w-[1320px] bg-lime-400 rounded-md shadow-md items-center justify-center">
+                      {/* Exibição dinâmica da largura e altura da tela */}
+                      <span className="font-medium text-slate-800">
+                        Dimensões da tela: {windowSize.width}px × {windowSize.height}px
+                      </span>
+                    </div>
                   </div>
                 </div>
-              </div>
 
-              {/* Segunda coluna do painel superior - passa para baixo em telas < 1600px */}
-              <div className="flex flex-col bg-zinc-600 shadow-md rounded-md p-2 w-full 2xl:w-auto">
-                {/* Primeira linha da segunda coluna de componentes - Checkboxs */}
-                <div className="flex flex-row items-center">
-                  <CheckBox className="flex ml-2"
-                    label="Cód.Serv."
-                    labelPosition="left"
-                    checked={true}
-                    onChange={(checked) => handleTodasUfsChange(checked)}
-                    disabled={false} // Desabilitar o checkbox quando nenhum cliente estiver selecionado
-                    tamanhoFonte="xs"
-                  />
-                  <CheckBox className="flex ml-20 "
-                    label="Status"
-                    labelPosition="left"
-                    checked={true}
-                    onChange={(checked) => handleTodasUfsChange(checked)}
-                    disabled={false} // Desabilitar o checkbox quando nenhum cliente estiver selecionado
-                  />
-                  <CheckBox className="flex ml-20"
-                    label="Dt.Limite"
-                    labelPosition="left"
-                    checked={true}
-                    onChange={(checked) => handleTodasUfsChange(checked)}
-                    disabled={false} // Desabilitar o checkbox quando nenhum cliente estiver selecionado
-                  /></div>
-                {/* Segunda linha da segunda coluna de componentes - Checkboxs */}
-                <div className="flex flex-row items-center mt-5">
-                  <CheckBox className="flex ml-2"
-                    label="Só serv.não concluidos"
-                    labelPosition="left"
-                    checked={true}
-                    onChange={(checked) => handleTodasUfsChange(checked)}
-                    disabled={false} // Desabilitar o checkbox quando nenhum cliente estiver selecionado
+                {/* Área do meio - containers lado a lado em telas grandes */}
+                <div className="flex w-full max-w-[1920px] flex-col 2xlb:flex-row gap-1 justify-center items-center">
+                  <div className="flex flex-col w-[940px] h-[460px]  bg-blue-200 rounded-md shadow-md text-slate-950">
+                    <div className="flex flex-row gap-1 w-[940px]">
+                      Grade Serviço
+                    </div>
+                  </div>
+                  <div className="flex flex-col w-[940px] h-[460px]  bg-green-200 rounded-md shadow-md text-slate-950">
+                    <div className="flex flex-row gap-1 w-[940px]">
+                      Grade Tarefa</div>
+                  </div>
+                </div>
 
-                  />
-                  <CheckBox className="flex ml-10"
-                    label="Novos"
-                    labelPosition="left"
-                    checked={true}
-                    onChange={(checked) => handleTodasUfsChange(checked)}
-                    disabled={false} // Desabilitar o checkbox quando nenhum cliente estiver selecionado
-                  />
-                  <CheckBox className="flex ml-10"
-                    label="Suspensos"
-                    labelPosition="left"
-                    checked={true}
-                    onChange={(checked) => handleTodasUfsChange(checked)}
-                    disabled={false} // Desabilitar o checkbox quando nenhum cliente estiver selecionado
-                  />
-                  <CheckBox className="flex ml-10"
-                    label="Sem nota"
-                    labelPosition="left"
-                    checked={true}
-                    onChange={(checked) => handleTodasUfsChange(checked)}
-                    disabled={false} // Desabilitar o checkbox quando nenhum cliente estiver selecionado
-                  />
-                  <CheckBox className="flex ml-10"
-                    label="Pendência"
-                    labelPosition="left"
-                    checked={true}
-                    onChange={(checked) => handleTodasUfsChange(checked)}
-                    disabled={false} // Desabilitar o checkbox quando nenhum cliente estiver selecionado
-                  />
-                  <CheckBox className="flex ml-10"
-                    label="Doc.Internet"
-                    labelPosition="left"
-                    checked={true}
-                    onChange={(checked) => handleTodasUfsChange(checked)}
-                    disabled={false} // Desabilitar o checkbox quando nenhum cliente estiver selecionado
-                  />
-                  <CheckBox className="flex ml-10"
-                    label="Só O.S."
-                    labelPosition="left"
-                    checked={true}
-                    onChange={(checked) => handleTodasUfsChange(checked)}
-                    disabled={false} // Desabilitar o checkbox quando nenhum cliente estiver selecionado
+                {/* Div com dropdown e TableConform - sempre abaixo das colunas superiores */}
+
+                <div className="flex w-full max-w-[1886px] h-[390px]">
+
+                  <TableConform
+                    codimov={selectedCodEnd || 22769}
+                    web={false}
+                    relatorio={false}
+                    cnpj=""
+                    temcnpj={false}
                   />
                 </div>
-                {/* Terceira linha da segunda coluna de componentes - Checkboxs  */}
-                <div className="flex flex-row items-center mt-5">
-                  <div className="flex ml-2 text-xs text-white">Gerencia Mauro</div>
 
-                  <div className="ml-4"></div>
-                  <InputFormatado
-                    label="H.Tramit."
-                    tipo="number"
-                    valor={"915.22"}
-                    step={0.00}
-                    tamanho={16}
-                    className="text-right"
-
-                  />
-                  <div className="ml-4"></div>
-                  <InputFormatado
-                    label="H.Assec."
-                    tipo="text"
-                    valor={""}
-                    tamanho={16}
-                  />
-                  <div className="ml-8"></div>
-                  <InputFormatado
-                    label="TE Assec."
-                    tipo="text"
-                    valor={""}
-                    tamanho={16}
-                  />
-                  <div className="ml-4"></div>
-                  <InputFormatado
-                    label="TE Assec."
-                    tipo="text"
-                    valor={""}
-                    tamanho={16}
-                  />
-                </div>
               </div>
-            </div>
-
-            {/* Div com dropdown e TableConform - sempre abaixo das colunas superiores */}
-            <div className="flex flex-col bg-slate-400 shadow-md rounded-md p-4 mt-4 w-full">
-              <DropDown
-                largura='300px'
-                placeholder="Selecione um CNPJ"
-                label=""
-                containerClassName="flex flex-row items-center bg-zinc-600 p-5 mb-1 border border-solid border-red-600 rounded-md w-full"
-                options={[
-                  { id: "1", label: "1 - Item 01" },
-                  { id: "2", label: "2 - Item 02" },
-                  { id: "3", label: "3 - Item 030" }
-                ]}
-                onChange={handleDropdownChange}
-              />
-              <TableConform
-                codimov={selectedCodEnd || 22769}
-                web={false}
-                relatorio={false}
-                cnpj=""
-                temcnpj={false}
-              />
             </div>
           </div>
-        </PaginaSemMenu>
-      )}
+        </div>
+      )
+      }
     </RequireAuth>
   )
 }

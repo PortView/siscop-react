@@ -17,7 +17,7 @@ const config: Config = {
   theme: {
     extend: {
       screens: {
-        '2xlb': '1520px', // você pode usar qualquer nome, mas '2xl' é uma boa escolha
+        '2xlb': '1670px', // você pode usar qualquer nome, mas '2xl' é uma boa escolha
       },
     },
   },
