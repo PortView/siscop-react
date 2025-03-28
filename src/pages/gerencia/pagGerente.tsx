@@ -5,7 +5,6 @@ import Cookies from 'js-cookie'
 import axios from 'axios'
 import TableConform from "../../components/template/TableConform"
 import RequireAuth from "../../components/auth/RequireAuth"
-import PaginaSemMenu from '@/components/template/PaginaSemMenu'
 import DropDown from '@/components/template/DropDown'
 import Botao from '@/components/template/Botao'
 import CheckBox from '@/components/template/CheckBox'
@@ -13,6 +12,7 @@ import ReguaDePag from '@/components/template/ReguaDePag'
 import { Icon123, IconCalculatorFilled, IconEdit, IconFileText, IconNumber123 } from '@tabler/icons-react'
 import InputFormatado from '@/components/template/InputFormatado'
 import BarraTopo from '@/components/template/BarraTopo'
+import TableServicos from '@/components/template/TableServicos'
 
 interface Cliente {
   codcli: number;
@@ -58,6 +58,7 @@ export default function PagGerente() {
       uf: string;
     }
   }>>([])
+
   // Estado para controlar o checkbox "Todas Ufs"
   // Inicializado como false para garantir que esteja desmarcado no carregamento da página
   const [todasUfs, setTodasUfs] = useState(false)
@@ -113,7 +114,9 @@ export default function PagGerente() {
         return
       }
 
-      const response = await axios.get(`${apiUrl}?codcoor=110`, {
+      // console.log(`Teste para ver cod do usuário ---> ${apiUrl}?codcoor=${localStorage.getItem('usuario_cod')}`) ///{Number(localStorage.getItem('usuario_cod'))}
+
+      const response = await axios.get(`${apiUrl}?codcoor=${localStorage.getItem('usuario_cod')}`, {
         headers: {
           Authorization: `Bearer ${token}`
         }
@@ -366,6 +369,7 @@ export default function PagGerente() {
 
     console.log("Unidade selecionada:", value);
     console.log("codend selecionado:", value ? parseInt(value) : null);
+    console.log("contrato selecionado:", selectedContrato ? selectedContrato : null);
   };
 
   // Função genérica para outros dropdowns
@@ -415,7 +419,7 @@ export default function PagGerente() {
                     {/* Primeira linha de componentes - Clientes, UF */}
                     <div className="flex flex-row gap-1 w-[940px]">
                       <DropDown
-                        largura='280px'
+                        largura='380px'
                         placeholder="Clientes"
                         label=""
                         options={clientesOptions}
@@ -466,7 +470,7 @@ export default function PagGerente() {
                     {/* Segunda linha de componentes - Unidades, Regua de Paginação */}
                     <div className="flex flex-center flex-row items-center">
                       <DropDown
-                        largura='450px'
+                        largura='500px'
                         placeholder="Unidades"
                         label="Unidades"
                         containerClassName="flex mt-2 mb-2"
@@ -713,7 +717,16 @@ export default function PagGerente() {
                 <div className="flex w-full max-w-[1920px] flex-col 2xlb:flex-row gap-1 justify-center items-center">
                   <div className="flex flex-col w-[940px] h-[460px]  bg-blue-200 rounded-md shadow-md text-slate-950">
                     <div className="flex flex-row gap-1 w-[940px]">
-                      Grade Serviço
+                      {/* Serviços */}
+                      <TableServicos
+                        qcodCoor={Number(localStorage.getItem('usuario_cod'))}  ///{Number(localStorage.getItem('usuario_cod'))}
+                        qcontrato={Number(selectedContrato || 4718)}
+                        qUnidade={Number(selectedCodEnd || 5687)}
+                        qConcluido={false}
+                        qCodServ={-1}
+                        qStatus={"ALL"}
+                        qDtlimite={"2001-1-1"} // tipo string e depois transformada
+                      />
                     </div>
                   </div>
                   <div className="flex flex-col w-[940px] h-[460px]  bg-green-200 rounded-md shadow-md text-slate-950">
